@@ -15,3 +15,9 @@ app = FastAPI(
 def health() -> dict[str, str]:
     """Sonde de vivacité : état et version déployée."""
     return {"status": "ok", "version": __version__}
+
+
+@app.get("/ping", tags=["ops"])
+def ping() -> dict[str, str]:
+    """Réponse minimale de test."""
+    return {"ping": "pong"}
