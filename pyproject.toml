@@ -1,0 +1,64 @@
+[project]
+name = "semver-repo-setup-sandbox"
+dynamic = ["version"]
+description = "Dépôt de test du skill semver-repo-setup."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "William Derue" }]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "types-pyyaml",
+    "pyyaml",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+# Version dérivée du dernier tag git vX.Y.Z (posé par le workflow release).
+# Dans l'image Docker, sans .git : SETUPTOOLS_SCM_PRETEND_VERSION.
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/semver_repo_setup_sandbox"]
+
+[tool.uv]
+# Réinstalle le paquet quand le commit ou les tags changent (version dynamique).
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true } }]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "S", "N", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests", "scripts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --cov=semver_repo_setup_sandbox --cov-report=term-missing --cov-fail-under=80"
+markers = [
+    "integration: appelle un service réel (exclu de la CI de PR)",
+]
