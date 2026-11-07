@@ -24,7 +24,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     SETUPTOOLS_SCM_PRETEND_VERSION="${VERSION#v}" uv sync --locked --no-dev --no-editable
 
 FROM python:3.12-slim
-RUN useradd --create-home --uid 10001 app
+# Correctifs de sécurité Debian publiés après l'image de base (sinon le scan Trivy
+# de la release bloque sur des CVE déjà corrigées en amont).
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 10001 app
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1
