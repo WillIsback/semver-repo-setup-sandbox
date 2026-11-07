@@ -9,3 +9,7 @@ def test_health_retourne_ok_et_version() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "version": __version__}
+
+
+def test_ping() -> None:
+    assert TestClient(app).get("/ping").json() == {"ping": "pong"}
