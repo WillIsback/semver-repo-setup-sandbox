@@ -3,7 +3,7 @@
 # du projet ensuite, image finale sans uv ni outils de build, utilisateur non root.
 FROM ghcr.io/astral-sh/uv:0.13.7 AS uv
 
-FROM python:3.12-slim AS builder
+FROM python:3.15-slim AS builder
 COPY --from=uv /uv /bin/uv
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -23,7 +23,7 @@ ARG VERSION=0.0.0
 RUN --mount=type=cache,target=/root/.cache/uv \
     SETUPTOOLS_SCM_PRETEND_VERSION="${VERSION#v}" uv sync --locked --no-dev --no-editable
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 # Correctifs de sécurité Debian publiés après l'image de base (sinon le scan Trivy
 # de la release bloque sur des CVE déjà corrigées en amont).
 RUN apt-get update \
