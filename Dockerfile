@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Image de l'API : dépendances installées dans une couche dédiée (cache), code
 # du projet ensuite, image finale sans uv ni outils de build, utilisateur non root.
-FROM ghcr.io/astral-sh/uv:0.13.8 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.9 AS uv
 
 FROM python:3.15-slim AS builder
 COPY --from=uv /uv /bin/uv
